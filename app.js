@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const cardRoutes = require('./routes/card');
 const usersRoutes = require('./routes/users');
 
@@ -6,6 +7,7 @@ const { PORT = 3000, BASE_PATH } = process.env;
 
 const app = express();
 
+app.use(helmet());
 app.use('/', [cardRoutes, usersRoutes]);
 
 // for Non-exestent address
