@@ -1,21 +1,19 @@
 const express = require('express');
-const cardRoutes = require('./routes/card')
-const usersRoutes = require('./routes/users')
+const cardRoutes = require('./routes/card');
+const usersRoutes = require('./routes/users');
 
-const { PORT = 3000, BASE_PATH } = process.env
+const { PORT = 3000, BASE_PATH } = process.env;
 
-const app = express()
+const app = express();
 
-app.use('/', [cardRoutes, usersRoutes])
+app.use('/', [cardRoutes, usersRoutes]);
 
-//for Non-exestent address
+// for Non-exestent address
 app.use('*', (req, res) => {
-  res.send({ "message": "Requested resource not found" })
-})
+  res.status(404).send({ message: 'Requested resource not found' });
+});
 
 app.listen(PORT, () => {
-  console.log(`Link to server ${BASE_PATH}`)
-  console.log(`Conntect to PORT ${PORT}`)
-})
-
-
+  console.log(`Link to server ${BASE_PATH}`);
+  console.log(`Conntect to PORT ${PORT}`);
+});
