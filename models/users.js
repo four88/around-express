@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'The "link" filed must be filled in'],
     validate: {
       validator(v) {
-        return /^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gi.test(v);
+        return /^(http|https):\/\/(www\.)?[a-z0-9\-/.]+/gi.test(v);
       },
       message: 'The avatar link should be an URL link',
     },

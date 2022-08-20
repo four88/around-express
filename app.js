@@ -5,17 +5,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cardRoutes = require('./routes/card');
 const usersRoutes = require('./routes/users');
+const { NOT_FOUND_ERROR_CODE } = require('./utils/constant');
 
 const { PORT = 3000, BASE_PATH } = process.env;
 
 const app = express();
-
+const dbUri = 'mongodb://0.0.0.0:27017/aroundb';
+const dbConfig = {
+  useNewUrlParser: true,
+};
 mongoose.Promise = global.Promise;
 
 // localhost not on my device I change it to 0.0.0.0
-mongoose.connect('mongodb://0.0.0.0:27017/aroundb', {
-  useNewUrlParser: true,
-})
+mongoose.connect(dbUri, dbConfig)
   .then(
     () => {
       console.log('DB connected');
@@ -47,7 +49,7 @@ app.use('/cards', cardRoutes);
 
 // for Non-exestent address
 app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+  res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Requested resource not found' });
 });
 
 app.listen(PORT, () => {

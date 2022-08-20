@@ -1,33 +1,33 @@
 const Card = require('../models/cards');
+const { NOT_FOUND_ERROR_CODE, ERROR_OCCURED_CODE, ERROR_OCCURED_MSG } = require('../utils/constant');
 
 // get all the card data
 module.exports.getCards = (req, res) => {
   Card.find({})
     .orFail(() => {
       const error = new Error('Can not find any card');
-      error.statusCode = 404;
+      error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      console.log(err);
+      res.status(400).send({ message: `${Object.values(err.errors)}` });
     });
 };
 
 // create card
 module.exports.createCard = (req, res) => {
-  console.log(req.user._id);
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
           message: `${Object.values(err.errors)}`,
         });
       } else {
-        res.status(500).send({ message: 'An error occured' });
+        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
       }
     });
 };
@@ -37,19 +37,19 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params._id)
     .orFail(() => {
       const error = new Error('Can not find this user id on all cards');
-      error.statusCode(404);
+      error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
     .then((card) => {
-      res.send({ data: card });
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Invalid card id' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
+      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
-        res.status(500).send({ message: 'An error occured' });
+        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
       }
     });
 };
@@ -63,19 +63,19 @@ module.exports.likeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Can not find this user id');
-      error.statusCode(404);
+      error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
     .then((card) => {
-      res.send({ data: card });
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Invalid card id' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
+      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
-        res.status(500).send({ message: 'An error occured' });
+        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
       }
     });
 };
@@ -89,19 +89,19 @@ module.exports.dislikeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Can not find this user id');
-      error.statusCode(404);
+      error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
     .then((card) => {
-      res.send({ data: card });
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Invalid card id' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
+      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
-        res.status(500).send({ message: 'An error occured' });
+        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
       }
     });
 };

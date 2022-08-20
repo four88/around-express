@@ -1,0 +1,9 @@
+const NOT_FOUND_ERROR_CODE = 404;
+const ERROR_OCCURED_CODE = 500;
+const ERROR_OCCURED_MSG = 'An error occured';
+
+module.exports = {
+  NOT_FOUND_ERROR_CODE,
+  ERROR_OCCURED_CODE,
+  ERROR_OCCURED_MSG,
+};
