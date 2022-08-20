@@ -1,17 +1,17 @@
-const path = require('path');
 const router = require('express').Router();
-const getDataFromFile = require('../helper/readFile');
-
-const cardPath = path.join(__dirname, '../data/cards.json');
+const {
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
+} = require('../controllers/cards');
 
 // set controller
-// for get all cards data
-const getCards = (req, res) => {
-  getDataFromFile(cardPath)
-    .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send(err));
-};
-
-router.get('/cards', getCards);
+router.get('/', getCards);
+router.post('/', createCard);
+router.delete('/:_id', deleteCard);
+router.put('/:_id/likes', likeCard);
+router.delete('/:_id/likes', dislikeCard);
 
 module.exports = router;

@@ -5,36 +5,36 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, 'The "name" field must be filled in'],
     minlength: [2, 'The minimum length of name is 2'],
-    maxlength: [30, 'The maximum length of name is 30']
+    maxlength: [30, 'The maximum length of name is 30'],
   },
   link: {
     type: String,
     required: [true, 'The "link" filed must be filled in'],
     validate: {
-      validator: function(v) {
-        return /^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gi.test(v)
+      validator(v) {
+        return /^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gi.test(v);
       },
-      message: "The image link should be an URL link"
-    }
+      message: 'The image link should be an URL link',
+    },
   },
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true
+    required: true,
   },
 
   likes: {
     type: [mongoose.Schema.Types.ObjectId],
     default: [],
-    ref: 'user'
+    ref: 'user',
 
   },
 
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model("card", cardSchema);
+module.exports = mongoose.model('card', cardSchema);
