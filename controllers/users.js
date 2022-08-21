@@ -1,5 +1,5 @@
 const User = require('../models/users');
-const { NOT_FOUND_ERROR_CODE, ERROR_OCCURED_CODE, ERROR_OCCURED_MSG } = require('../utils/constant');
+const { NOT_FOUND_ERROR_CODE, ERROR_OCCURED_CODE, ERROR_OCCURED_MSG, INVALID_CODE, SUCCESS_CODE } = require('../utils/constant');
 
 // get all the user data
 module.exports.getUser = (req, res) => {
@@ -9,9 +9,14 @@ module.exports.getUser = (req, res) => {
       error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
-      res.status(400).send({ message: `${Object.values(err.errors)}` });
+      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message })
+      } else {
+        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG })
+      }
+
     });
 };
 
@@ -23,10 +28,10 @@ module.exports.getProfile = (req, res) => {
       error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid user id' });
+        res.status(INVALID_CODE).send({ message: 'Invalid user id' });
       } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
@@ -39,10 +44,10 @@ module.exports.getProfile = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(INVALID_CODE).send({
           message: `${Object.values(err.errors)}`,
         });
       } else {
@@ -60,11 +65,17 @@ module.exports.updateProfile = (req, res) => {
       error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
-    .then((user) => res.staus(200).send({ data: user }))
+    .then((user) => res.staus(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ messge: 'Invalid user id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(INVALID_CODE).send({ messge: 'Invalid user id' });
+      }
+      else if (err.name === 'ValidationError') {
+        res.status(INVALID_CODE).send({
+          message: `${Object.values(err.errors)}`,
+        });
+      }
+      else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
         res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
@@ -81,11 +92,17 @@ module.exports.updateProfileAvatar = (req, res) => {
       error.statusCode = NOT_FOUND_ERROR_CODE;
       throw error;
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ messge: 'Invalid user id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        res.status(INVALID_CODE).send({ messge: 'Invalid user id' });
+      }
+      else if (err.name === 'ValidationError') {
+        res.status(INVALID_CODE).send({
+          message: `${Object.values(err.errors)}`,
+        });
+      }
+      else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       } else {
         res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
